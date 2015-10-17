@@ -6,7 +6,8 @@ from fields.fields import *
 class ModelMetaClass(type):
 	def __new__(cls, name, bases, attrs):
 		if name == 'Model':
-			super(ModelMetaClass, cls).__new__(cls, name, bases, attrs)
+			#super(ModelMetaClass, cls).__new__(cls, name, bases, attrs)
+			type.__new__(cls, name, bases, attrs)
 
 		tableName = attrs.get('__tableName__', None) or name
 		mappings = dict() #所有参数的映射关系
@@ -42,7 +43,8 @@ class ModelMetaClass(type):
 		attrs['__update__'] = 'UPDATE %s SET %s WHERE %s=?' %(tableName, ','.join(list(map(lambda f: '%s=?' %f, no_pri_field))), primaryKey)
 		attrs['__delete__'] = 'DELETE FROM %s WHERE %s=?' %(tableName,primaryKey)
 
-		return super(ModelMetaClass,cls).__new__(cls, name, bases, attrs)
+		#return super(ModelMetaClass,cls).__new__(cls, name, bases, attrs)
+		return type.__new__(cls, name, bases, attrs)
 
 
 def _getValueString(length):

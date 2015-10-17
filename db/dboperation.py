@@ -1,27 +1,10 @@
 #/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
+import logging
 from mysql.connector.pooling import MySQLConnectionPool
-from error import ConnectionError
 
 global _pool
-
-# global conn
-
-# def connect(host, port, database, user, password):
-# 	global conn
-# 	try:
-# 		conn = mysql.connector.connect(user=user, password=password, database=database, host=host, port=port, use_unicode=True)
-# 	except Exception as e:
-# 		raise e
-
-config = {
-	'host':'127.0.0.1',
-	'port':3306,
-	'database':'test',
-	'user':'root',
-	'password':'root'
-}
 
 #create connection pools
 def create_pools(pool_size=5, **kw):
@@ -43,11 +26,10 @@ def get_connection():
 
 #select operation
 def select(sql, args, size=None):
-	sql.replace('?', '%s')
 	conn = get_connection()
 	try:
-		cur = conn.cursor()
-		cur.execute(sql, args or ())
+		cur = conn.cursor(dictionary=True)
+		cur.execute(sql.replace('?', '%s'), args or ())
 		if size:
 			rs = cur.fetchmany(size)
 		else:
@@ -58,21 +40,32 @@ def select(sql, args, size=None):
 	except Exception as e:
 		raise e
 
-def execute(sql, args, autocommit=True):
-	sql.replace('?', '%s')
+def execute(sql, args):
 	conn = get_connection()
 	try:
 		cur = conn.cursor()
-		cur.execute(sql, args)
+		logging.info(sql.replace('?', '%s'))
+		cur.execute(sql.replace('?', '%s'), args)
 		affected = cur.rowcount
+		print (affected)
+		if affected == 1:
+			conn.commit()
+		else:
+			conn.rollback()
 		cur.close()
 		conn.close() #put the connection into the queue, not realsing the connection
-		if not autocommit:
-			conn.commit()
+		return affected
 	except Exception as e:
-		if not autocommit:
-			conn.rollback()
+		conn.rollback()
 		raise e
 
+class BaseError(Exception):
+	def __init__(self, error, message):
+		super(baseError, self).__init__(message)
+		self.error = error
+		self.message = message
 
+class ConnectionError(BaseError):
+	def __init__(self, message):
+		super(ConnectionError, self).__init__('Connection Error', message)
 

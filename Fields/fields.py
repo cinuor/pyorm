@@ -9,8 +9,8 @@ class Field(object):
 		self.default = default
 
 class StringField(Field):
-	def __init__(self,column_type, primary_key=False, default=None):
-		super(StringField, self).__init__(column_type, primary_key, default)
+	def __init__(self,ddl, primary_key=False, default=None):
+		super(StringField, self).__init__(ddl, primary_key, default)
 
 class IntegerField(Field):
 	def __init__(self, primary_key=False, default=None):
