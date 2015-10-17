@@ -47,4 +47,10 @@ class Model(dict,metaclass=ModelMetaClass):
 				raise ValueError('args does not match')
 			sql.append('WHERE')
 			sql.append(where)
+		if 'orderby' in kw.keys():
+			sql.append('ORDER')
+			sql.append('BY')
+			sql.append(kw.get('orderby'))
+
+		print (' '.join(sql))
 		#do some other things
