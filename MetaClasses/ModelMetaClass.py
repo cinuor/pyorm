@@ -32,13 +32,13 @@ class ModelMetaClass(type):
 		no_pri_field = list(map(lambda f: '%s' %f, fields))
 
 		attrs['__mapping__'] = mappings
-		attrs['__field__'] = fields
+		attrs['__fields__'] = fields
 		attrs['__table__'] = tableName
 		attrs['__primaryKey__'] = primaryKey
 
 		#构造基本SQL语句
 		attrs['__select__'] = 'SELECT %s,%s FROM %s' %(primaryKey, ','.join(no_pri_field), tableName)
-		attrs['__insert__'] = 'INSERT INTO %s (%s,%s) VALUES (%s)' %(tableName, primaryKey, ','.join(no_pri_field), _getValueString(len(no_pri_field) + 1))
+		attrs['__insert__'] = 'INSERT INTO %s (%s,%s) VALUES (%s)' %(tableName, ','.join(no_pri_field), primaryKey, _getValueString(len(no_pri_field) + 1))
 		attrs['__update__'] = 'UPDATE %s SET %s WHERE %s=?' %(tableName, ','.join(list(map(lambda f: '%s=?' %f, no_pri_field))), primaryKey)
 		attrs['__delete__'] = 'DELETE FROM %s WHERE %s=?' %(tableName,primaryKey)
 
