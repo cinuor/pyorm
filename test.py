@@ -14,4 +14,7 @@ class User(Model):
 if __name__ == '__main__':
 	u = User(uname='cookie',age=100)
 	print (dir(u))
-	print (u.age)
+	#print (u.age)
+	#User.find(where='email=? AND id=?', args=['cokie@foxmail.com', '123'], orderby='id DESC')
+	u.save()
+	print (u.__fields__)
