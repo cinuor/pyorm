@@ -67,4 +67,9 @@ class Model(dict,metaclass=ModelMetaClass):
 		args = list(map(self.getValue, self.__fields__))
 		args.append(self.getValue(self.__primaryKey__))
 		#do insert operation
+
+	def remove(self):
+		sql = self.__delete__
+		args = [self.getValue(self.__primaryKey__)]
+		#do insert operation
 		
