@@ -53,4 +53,12 @@ class Model(dict,metaclass=ModelMetaClass):
 			sql.append(kw.get('orderby'))
 
 		print (' '.join(sql))
-		#do some other things
+		#do select operation
+
+
+	def save(self):
+		sql = self.__insert__
+		args = list(map(self.getValue, self.__fields__))
+		args.append(self.getValue(self.__primaryKey__))
+		#do insert operation
+		
